@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -19,6 +20,11 @@ class _SplashScreenState extends State<SplashScreen> {
   double iconWidth = 50;
   @override
   void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        iconWidth = 100;
+      });
+    });
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacementNamed(
         '/home',
@@ -28,11 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     });
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        iconWidth = 100;
-      });
-    });
+
     super.initState();
   }
 
@@ -56,19 +58,30 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            RichText(
-              text: TextSpan(
-                text: 'Powered by ',
-                style: Theme.of(context).textTheme.labelMedium,
-                children: [
-                  TextSpan(
-                    text: 'WeatherAPI.com',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: widget.flexSchemeData.light.primary,
-                        ),
-                  ),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Powered by ',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                AnimatedTextKit(
+                  animatedTexts: [
+                    TypewriterAnimatedText(
+                      'WeatherAPI.com',
+                      textStyle:
+                          Theme.of(context).textTheme.labelMedium?.copyWith(
+                                color: widget.flexSchemeData.light.primary,
+                              ),
+                      textAlign: TextAlign.left,
+                      speed: const Duration(milliseconds: 60),
+                    ),
+                  ],
+                  totalRepeatCount: 2,
+                  displayFullTextOnTap: true,
+                  stopPauseOnTap: true,
+                ),
+              ],
             ),
           ],
         ),
