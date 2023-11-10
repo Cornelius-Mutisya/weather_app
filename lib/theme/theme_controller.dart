@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:weather_app/core/services/store.dart';
-import 'package:weather_app/core/services/theme_service.dart';
+import 'package:weather_app/theme/store.dart';
+import 'package:weather_app/theme/theme_service.dart';
 
 enum TonalPalettes {
   primary,

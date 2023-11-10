@@ -178,14 +178,14 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
                             buildExtraDataWidget(
                               colorScheme,
                               contextLabel: 'Humidity',
-                              value: '${locationData.current.humidity} %',
+                              value: '${locationData.current.humidity}%',
                               icon: MdiIcons.waterPercent,
                             ),
                             const SizedBox(width: 20),
                             buildExtraDataWidget(
                               colorScheme,
                               contextLabel: 'Cloud',
-                              value: '${locationData.current.cloud} %',
+                              value: '${locationData.current.cloud}%',
                               icon: MdiIcons.cloud,
                             ),
                           ],

@@ -2,10 +2,10 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weather_app/core/services/theme_service.dart';
-import 'package:weather_app/core/services/theme_service_prefs.dart';
+import 'package:weather_app/theme/theme_service.dart';
+import 'package:weather_app/theme/theme_service_prefs.dart';
 import 'package:weather_app/features/home/screens/home_screen.dart';
-import 'package:weather_app/features/settings/settings_screen.dart';
+import 'package:weather_app/features/settings/screens/settings_screen.dart';
 import 'package:weather_app/features/splash/splash_screen.dart';
 import 'package:weather_app/theme/theme_controller.dart';
 
