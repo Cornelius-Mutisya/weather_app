@@ -3,7 +3,6 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:weather_app/features/home/screens/home_screen.dart';
 import 'package:weather_app/theme/theme_controller.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -26,13 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     });
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed(
-        '/home',
-        arguments: HomeScreen(
-          flexSchemeData: widget.flexSchemeData,
-          themeController: widget.themeController,
-        ),
-      );
+      Navigator.of(context).pushReplacementNamed('/home');
     });
 
     super.initState();
