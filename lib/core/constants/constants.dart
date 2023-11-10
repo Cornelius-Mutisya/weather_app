@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppConstants {
-  static const String baseUrl = 'https://api.weatherapi.com/v1';
+  static Color gray50 = const Color(0xFFF2F2F2);
 }

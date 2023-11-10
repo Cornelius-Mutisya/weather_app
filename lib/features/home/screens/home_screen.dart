@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'package:weather_app/core/providers/providers.dart';
+import 'package:weather_app/features/home/screens/current_weather.dart';
+import 'package:weather_app/features/home/screens/forecast_view.dart';
+import 'package:weather_app/features/home/widgets/tab_chips.dart';
 import 'package:weather_app/theme/theme_controller.dart';
-
-import '../widgets/weather_item.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({
@@ -23,11 +24,26 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late final _searchController = TextEditingController();
+  late PageController _pageController;
+
+  final List<String> homeTabs = [
+    'Current Weather',
+    'Forecast',
+  ];
+  int activeTab = 0;
+  setActiveTab(int index) {
+    setState(() {
+      activeTab = index;
+      _pageController.animateToPage(index,
+          duration: const Duration(milliseconds: 500), curve: Curves.ease);
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _searchController.text = ref.read(cityProvider);
+    _pageController = PageController(initialPage: 0);
   }
 
   @override
@@ -40,9 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
-    // final bool isDark = colorScheme.brightness == Brightness.dark;
-
-    final currentWeatherData = ref.watch(currentWeatherProvider);
+    final bool isDark = colorScheme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -60,67 +74,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search City',
-                  prefixIcon: Icon(
-                    MdiIcons.magnify,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: ListView.builder(
+                  itemCount: homeTabs.length,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  primary: true,
+                  itemBuilder: (context, i) {
+                    return isDark
+                        ? DarkChipWidget(
+                            label: homeTabs[i],
+                            i: i,
+                            activeTab: activeTab,
+                            onSelected: (value) {
+                              setActiveTab(i);
+                            },
+                          )
+                        : LightChipWidget(
+                            label: homeTabs[i],
+                            i: i,
+                            activeTab: activeTab,
+                            onSelected: (value) {
+                              setActiveTab(i);
+                            },
+                          );
+                  },
                 ),
-                textInputAction: TextInputAction.search,
-                onFieldSubmitted: (value) =>
-                    ref.read(cityProvider.notifier).state = value,
               ),
               const SizedBox(height: 20),
-              // Show default weather card for Nairobi
-              currentWeatherData.when(
-                data: (locationData) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 20,
-                    ),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: colorScheme.primaryContainer,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        WeatherItem(
-                          icon: MdiIcons.mapMarker,
-                          label:
-                              '${locationData.location.name}, ${locationData.location.country}',
-                        ),
-                        const SizedBox(height: 20),
-                        WeatherItem(
-                          icon: MdiIcons.thermometer,
-                          label: '${locationData.current.tempC}°C',
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, __) => Text('$e'),
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  children: const [
+                    CurrentWeatherView(),
+                    ForecastView(),
+                  ],
+                ),
               ),
             ],
-          ),
-        ),
-      ),
+          )),
     );
   }
 }

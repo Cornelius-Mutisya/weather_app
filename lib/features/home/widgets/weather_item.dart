@@ -8,19 +8,17 @@ class WeatherItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Icon(
           icon,
-          color: colorScheme.primary,
-          size: 40,
+          size: 20,
         ),
-        const SizedBox(width: 20),
+        const SizedBox(width: 5),
         Text(
           label,
-          style: theme.textTheme.bodyLarge,
+          style: theme.textTheme.bodyMedium,
         ),
       ],
     );
