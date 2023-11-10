@@ -12,7 +12,7 @@ class InvalidApiKeyException extends APIException {
 }
 
 class NoQueryException extends APIException {
-  NoQueryException() : super('No query provided');
+  NoQueryException() : super('Please enter a valid query');
 }
 
 class NoInternetConnectionException extends APIException {

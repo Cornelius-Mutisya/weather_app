@@ -53,10 +53,18 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
                 isDense: true,
                 hintText: 'Search City',
                 prefixIcon: Icon(
-                  MdiIcons.magnify,
+                  MdiIcons.mapMarker,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(MdiIcons.magnify),
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    ref.read(cityProvider.notifier).state =
+                        _searchController.text;
+                  },
                 ),
               ),
               textInputAction: TextInputAction.search,
