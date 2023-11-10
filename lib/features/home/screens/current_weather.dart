@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:weather_app/core/helpers.dart';
 import 'package:weather_app/core/providers/providers.dart';
 import 'package:weather_app/features/home/widgets/custom_divider.dart';
@@ -36,7 +37,7 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
-    // final bool isDark = colorScheme.brightness == Brightness.dark;
+    final bool isDark = colorScheme.brightness == Brightness.dark;
 
     final currentWeatherData = ref.watch(currentWeatherProvider);
     final forecastData = ref.watch(forecastWeatherProvider);
@@ -177,7 +178,7 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
                               colorScheme,
                               contextLabel: 'Cloud',
                               value: '${locationData.current.cloud} %',
-                              icon: MdiIcons.waterPercent,
+                              icon: MdiIcons.cloud,
                             ),
                           ],
                         ),
@@ -186,7 +187,7 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
                   ],
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => _locationShimmer(isDark),
               error: (e, __) => Text('$e'),
             ),
             const SizedBox(height: 20),
@@ -211,7 +212,7 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
                     itemBuilder: (context, index) {
                       Forecastday forecastday = forecastData.forecastday[index];
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
                         child: Column(
                           children: [
                             Row(
@@ -246,7 +247,7 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
                       );
                     });
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => _forecastShimmer(isDark),
               error: (e, __) => Text('$e'),
             ),
           ],
@@ -294,4 +295,74 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
           ],
         ),
       );
+
+  _locationShimmer(bool isDark) {
+    return SizedBox(
+      child: Shimmer.fromColors(
+          baseColor: (isDark)
+              ? const Color(0xFF469D9A).withOpacity(0.6)
+              : const Color(0xFF469D9A).withOpacity(0.4),
+          highlightColor: Colors.white60,
+          child: Column(
+            children: [
+              Container(
+                height: 200,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.grey.shade100,
+                ),
+              ),
+              SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  itemCount: 5,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (context, i) => Container(
+                    width: 100,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey.shade100,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+
+  _forecastShimmer(bool isDark) {
+    return SizedBox(
+      child: Shimmer.fromColors(
+          baseColor: (isDark)
+              ? const Color(0xFF469D9A).withOpacity(0.4)
+              : const Color(0xFF469D9A).withOpacity(0.1),
+          highlightColor: Colors.white60,
+          child: ListView.builder(
+            itemCount: 4,
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemBuilder: (context, i) => Container(
+              height: 80,
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey.shade100,
+              ),
+            ),
+          )),
+    );
+  }
 }
