@@ -2,8 +2,6 @@
 
 A Flutter weather app using the [Weather API](https://www.weatherapi.com/).
 
-## Screenshots
-
 ## Getting Started
 
 - Clone the repository and open the project in your IDE of choice.
@@ -44,3 +42,8 @@ The app uses features and modules to separate concerns and make the codebase mor
 - [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) for app icons
 
 **Note**: to use the API you'll need to register an account and obtain your own API key from [Weather API](https://www.weatherapi.com/). This can be set inside `lib/api/api_keys.dart`. However, for the purpose of this assessment, the API key has been provided in the code.
+
+## Screenshots
+![Dark Mode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/f3b71c5c-6b7f-41e6-b305-119f764ae1c5)
+![Light Mode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/569796af-6228-4eff-b3a4-2ac0ac89da34)
+![Settings Dark Mode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/ff37f71c-b20c-4138-9d6e-c32b848ba506)
