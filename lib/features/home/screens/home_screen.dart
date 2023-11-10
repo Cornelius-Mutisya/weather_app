@@ -2,10 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
-import 'package:weather_app/core/providers/providers.dart';
 import 'package:weather_app/features/home/screens/current_weather.dart';
-
 import 'package:weather_app/theme/theme_controller.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -22,20 +19,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  late final _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController.text = ref.read(cityProvider);
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
