@@ -5,8 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import 'package:weather_app/core/providers/providers.dart';
 import 'package:weather_app/features/home/screens/current_weather.dart';
-import 'package:weather_app/features/home/screens/forecast_view.dart';
-import 'package:weather_app/features/home/widgets/tab_chips.dart';
+
 import 'package:weather_app/theme/theme_controller.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -24,26 +23,11 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late final _searchController = TextEditingController();
-  late PageController _pageController;
-
-  final List<String> homeTabs = [
-    'Current Weather',
-    'Forecast',
-  ];
-  int activeTab = 0;
-  setActiveTab(int index) {
-    setState(() {
-      activeTab = index;
-      _pageController.animateToPage(index,
-          duration: const Duration(milliseconds: 500), curve: Curves.ease);
-    });
-  }
 
   @override
   void initState() {
     super.initState();
     _searchController.text = ref.read(cityProvider);
-    _pageController = PageController(initialPage: 0);
   }
 
   @override
@@ -54,10 +38,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
-    final bool isDark = colorScheme.brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Weather App'),
@@ -73,51 +53,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: ListView.builder(
-                  itemCount: homeTabs.length,
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  primary: true,
-                  itemBuilder: (context, i) {
-                    return isDark
-                        ? DarkChipWidget(
-                            label: homeTabs[i],
-                            i: i,
-                            activeTab: activeTab,
-                            onSelected: (value) {
-                              setActiveTab(i);
-                            },
-                          )
-                        : LightChipWidget(
-                            label: homeTabs[i],
-                            i: i,
-                            activeTab: activeTab,
-                            onSelected: (value) {
-                              setActiveTab(i);
-                            },
-                          );
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  children: const [
-                    CurrentWeatherView(),
-                    ForecastView(),
-                  ],
-                ),
-              ),
-            ],
-          )),
+      body: const CurrentWeatherView(),
     );
   }
 }

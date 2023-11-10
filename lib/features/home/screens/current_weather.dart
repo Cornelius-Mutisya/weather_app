@@ -1,9 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:weather_app/core/helpers.dart';
 import 'package:weather_app/core/providers/providers.dart';
+import 'package:weather_app/features/home/widgets/custom_divider.dart';
 import 'package:weather_app/features/home/widgets/weather_item.dart';
+import 'package:weather_app/models/forecast_response.dart';
 
 class CurrentWeatherView extends ConsumerStatefulWidget {
   const CurrentWeatherView({super.key});
@@ -35,118 +39,218 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
     // final bool isDark = colorScheme.brightness == Brightness.dark;
 
     final currentWeatherData = ref.watch(currentWeatherProvider);
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search City',
-              prefixIcon: Icon(
-                MdiIcons.magnify,
+    final forecastData = ref.watch(forecastWeatherProvider);
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextFormField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                isDense: true,
+                hintText: 'Search City',
+                prefixIcon: Icon(
+                  MdiIcons.magnify,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+              textInputAction: TextInputAction.search,
+              onFieldSubmitted: (value) =>
+                  ref.read(cityProvider.notifier).state = value,
+            ),
+            const SizedBox(height: 20),
+            currentWeatherData.when(
+              data: (locationData) {
+                return Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 20,
+                      ),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: colorScheme.primaryContainer,
+                        ),
+                        gradient: LinearGradient(
+                          colors: [
+                            colorScheme.primary.withOpacity(0.4),
+                            colorScheme.primary.withOpacity(0.1),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Text(
+                                'Today',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                '${Helpers.formatDate(locationData.location.localtime)}',
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${locationData.current.tempC}°C',
+                                style: TextStyle(
+                                  fontSize: 35,
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Image.network(
+                                'https:${locationData.current.condition.icon}',
+                                width: 60,
+                                height: 60,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              WeatherItem(
+                                icon: MdiIcons.mapMarker,
+                                label:
+                                    '${locationData.location.name}, ${locationData.location.country}',
+                              ),
+                              Text(
+                                locationData.current.condition.text,
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    CupertinoScrollbar(
+                      thickness: 8,
+                      radius: const Radius.circular(8),
+                      thumbVisibility: false,
+                      child: Container(
+                        height: 130,
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: ListView(
+                          shrinkWrap: true,
+                          primary: false,
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            buildExtraDataWidget(
+                              colorScheme,
+                              contextLabel: 'Wind',
+                              value: '${locationData.current.windKph} km/h',
+                              icon: MdiIcons.weatherWindy,
+                            ),
+                            const SizedBox(width: 20),
+                            buildExtraDataWidget(
+                              colorScheme,
+                              contextLabel: 'Humidity',
+                              value: '${locationData.current.humidity} %',
+                              icon: MdiIcons.waterPercent,
+                            ),
+                            const SizedBox(width: 20),
+                            buildExtraDataWidget(
+                              colorScheme,
+                              contextLabel: 'Cloud',
+                              value: '${locationData.current.cloud} %',
+                              icon: MdiIcons.waterPercent,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, __) => Text('$e'),
+            ),
+            const SizedBox(height: 20),
+            customDivider(),
+            const Center(
+              child: Text(
+                '7 days Forecast',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            textInputAction: TextInputAction.search,
-            onFieldSubmitted: (value) =>
-                ref.read(cityProvider.notifier).state = value,
-          ),
-          const SizedBox(height: 20),
-          // Show default weather card for Nairobi
-          currentWeatherData.when(
-            data: (locationData) {
-              return Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 20,
-                    ),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: colorScheme.primaryContainer,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+            customDivider(),
+            forecastData.when(
+              data: (forecastData) {
+                return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: forecastData.forecastday.length,
+                    primary: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      Forecastday forecastday = forecastData.forecastday[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Column(
                           children: [
-                            const Text(
-                              'Today',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  DateFormat('EEEE, d')
+                                      .format(forecastday.date),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Image.network(
+                                  'https:${forecastday.day.condition.icon}',
+                                  width: 30,
+                                  height: 30,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  forecastday.day.condition.text,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  '${forecastday.day.avgtempC}°C',
+                                ),
+                                const SizedBox(width: 10),
+                              ],
                             ),
-                            const Spacer(),
-                            Text(
-                              '${Helpers.formatDate(locationData.location.localtime)}',
-                              style: const TextStyle(
-                                fontSize: 15,
-                              ),
-                            ),
+                            customDivider(),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        Text(
-                          '${locationData.current.tempC}°C',
-                          style: TextStyle(
-                            fontSize: 35,
-                            color: colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            WeatherItem(
-                              icon: MdiIcons.mapMarker,
-                              label:
-                                  '${locationData.location.name}, ${locationData.location.country}',
-                            ),
-                            Text(
-                              locationData.current.condition.text,
-                              style: const TextStyle(fontSize: 15),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildExtraDataWidget(
-                        colorScheme,
-                        contextLabel: 'Wind',
-                        value: '${locationData.current.windKph} km/h',
-                        icon: MdiIcons.weatherWindy,
-                      ),
-                      const SizedBox(width: 20),
-                      buildExtraDataWidget(
-                        colorScheme,
-                        contextLabel: 'Humidity',
-                        value: '${locationData.current.humidity} %',
-                        icon: MdiIcons.waterPercent,
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, __) => Text('$e'),
-          ),
-        ],
+                      );
+                    });
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, __) => Text('$e'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -158,15 +262,16 @@ class _CurrentWeatherViewState extends ConsumerState<CurrentWeatherView> {
     required IconData icon,
   }) =>
       Container(
+        width: 120,
         decoration: BoxDecoration(
           color: colorScheme.primaryContainer.withOpacity(0.3),
           borderRadius: BorderRadius.circular(16),
         ),
         padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 10,
+          vertical: 12,
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,

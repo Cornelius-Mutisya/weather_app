@@ -9,6 +9,10 @@ class WeatherAPI {
         endpoint: "current.json",
         parametersBuilder: () => queryParameters(query),
       );
+  Uri forecast(String query, String days) => _buildUri(
+        endpoint: "forecast.json",
+        parametersBuilder: () => forecastParameters(query, days),
+      );
 
   Uri _buildUri({
     required String endpoint,
@@ -25,5 +29,12 @@ class WeatherAPI {
   Map<String, dynamic> queryParameters(String query) => {
         "q": query,
         "key": apiKey,
+      };
+
+  Map<String, dynamic> forecastParameters(String query, String days) => {
+        "q": query,
+        "key": apiKey,
+        "days": days,
+        "alerts": "yes",
       };
 }

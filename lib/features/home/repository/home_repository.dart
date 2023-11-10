@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +6,7 @@ import 'package:weather_app/api/api.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather_app/api/api_exceptions.dart';
 import 'package:weather_app/api/api_keys.dart';
+import 'package:weather_app/models/forecast_response.dart';
 import 'package:weather_app/models/location_response.dart';
 
 final homeRepositoryProvider = Provider((ref) {
@@ -29,6 +29,12 @@ class HomeRepository {
         uri: api.currentWeather(city),
         builder: (data) => locationResponseFromJson(data),
       );
+  Future<ForecastResponse> forecastWeather(
+          {required String city, required String days}) =>
+      _getData(
+        uri: api.forecast(city, days),
+        builder: (data) => forecastFromJson(data),
+      );
 
   Future<T> _getData<T>({
     required Uri uri,
@@ -36,7 +42,6 @@ class HomeRepository {
   }) async {
     try {
       final response = await client.get(uri);
-      log("fetchCode: ${response.statusCode}");
       switch (response.statusCode) {
         case 200:
           final data = response.body;
