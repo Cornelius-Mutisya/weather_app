@@ -31,6 +31,7 @@ const FlexSchemeData _myFlexScheme = FlexSchemeData(
     secondaryContainer: Color(0xFFFFD270),
     tertiary: Color(0xFF2563EB),
     tertiaryContainer: Color(0xFFEFF6FF),
+    appBarColor: Color(0xFF469D9A),
   ),
   dark: FlexSchemeColor(
     primary: Color(0xFF469D9A),
@@ -39,6 +40,7 @@ const FlexSchemeData _myFlexScheme = FlexSchemeData(
     secondaryContainer: Color(0xFFD26900),
     tertiary: Color(0xFFC9CBFC),
     tertiaryContainer: Color(0xFF535393),
+    appBarColor: Color(0xFF469D9A),
   ),
 );
 
@@ -70,7 +72,6 @@ class WeatherApp extends StatelessWidget {
             },
             theme: FlexThemeData.light(
               scaffoldBackground: const Color(0xFFF0F0F0),
-              // appBarBackground: Colors.white,
               colors: _myFlexScheme.light,
               subThemesData: themeController.useSubThemes
                   ? const FlexSubThemesData()
