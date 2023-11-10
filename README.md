@@ -2,11 +2,6 @@
 
 A Flutter weather app using the [Weather API](https://www.weatherapi.com/).
 
-## Screenshots
-![Dark Mode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/27292537-bad0-47cc-92f5-b3ff39215471) ![LightMode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/fe927493-66aa-4a10-af26-2996a137613e)
-![Settings Dark Mode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/ff37f71c-b20c-4138-9d6e-c32b848ba506) ![Loading Animation](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/ec1eed5e-8302-475e-aedd-eb71fd421aa3)
-
-
 ## Getting Started
 
 - Clone the repository and open the project in your IDE of choice.
@@ -47,3 +42,7 @@ The app uses features and modules to separate concerns and make the codebase mor
 - [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) for app icons
 
 **Note**: to use the API you'll need to register an account and obtain your own API key from [Weather API](https://www.weatherapi.com/). This can be set inside `lib/api/api_keys.dart`. However, for the purpose of this assessment, the API key has been provided in the code.
+
+## Screenshots
+![Dark Mode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/27292537-bad0-47cc-92f5-b3ff39215471) ![LightMode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/fe927493-66aa-4a10-af26-2996a137613e)
+![Settings Dark Mode](https://github.com/Cornelius-Mutisya/weather_app/assets/29639344/ff37f71c-b20c-4138-9d6e-c32b848ba506)
